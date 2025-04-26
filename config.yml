@@ -1,0 +1,10 @@
+stt:
+  provider: deepgram
+tts:
+  provider: elevenlabs
+llm:
+  provider: openai
+recorder:
+  samplerate: 16000
+  block_duration: 1.0
+  device: 1
