@@ -2,9 +2,46 @@ stt:
   provider: deepgram
 tts:
   provider: elevenlabs
-llm:
-  provider: openai
+  voice_id:   "" # change this to one of your valid voice IDs, or leave blank to auto-pick
+  model_id: "eleven_multilingual_v2"
+  output_format: "pcm_16000"
+  stability: 0.75
+  similarity_boost: 0.75
+agent:
+  model: gpt-4
+  system_prompt_template: |
+    You are the Spike Clinical insurance-verification assistant. You are calling the insurer to verify a patient’s coverage.  You start with this known patient info:
+
+      Member ID: {member_id}
+      Patient Name: {patient_name}
+      Date of Birth: {date_of_birth}
+
+    You must collect the remaining fields by asking the insurer, in this order if not volunteered:
+
+      insurance_active_to
+      date_of_treatment
+      visit_limit
+      visit_limit_structure
+      visits_used
+      copay
+      deductible
+      deductible_met
+      out_of_pocket_maximum
+      out_of_pocket_met
+      initial_authorization
+      reference_number
+
+    After each rep response, update your internal JSON state and then ask for the next missing piece in a single, natural‐language question.  When all fields are filled, recap them and end the call.
+     **IMPORTANT**: Always put your natural‐language reply **before** the JSON state.  
+    For instance:
+      Here is my question about copay.  
+      json here
+    When the summary is confirmed, thank for the help and end the call. Include the word "goodbye" in your last message.
+      
+patient:
+  member_id: MOY93832338
+  patient_name: Robot Funky
+  date_of_birth: January 1 1985
 recorder:
   samplerate: 16000
-  block_duration: 1.0
-  device: 1
+  frame_duration: 30 # ms
