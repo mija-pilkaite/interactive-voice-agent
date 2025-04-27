@@ -6,16 +6,44 @@ class ElevenLabsTTS:
     """
     ElevenLabs TTS wrapper supporting both batch synthesize and async streaming.
     """
+    @staticmethod
+    def fetch_voices():
+        key = os.getenv("ELEVENLABS_API_KEY", "").strip()
+        if not key:
+            raise ValueError("Missing ELEVENLABS_API_KEY")
+        client = ElevenLabs(api_key=key)
+        return client.voices.get_all().voices
+
+    @staticmethod
+    def voice_id_for_name(name: str):
+        """
+        Look up the first voice whose .name matches (case-insensitive) the given name.
+        Raises KeyError if no match is found.
+        """
+        for v in ElevenLabsTTS.fetch_voices():
+            if v.name.lower() == name.lower():
+                return v.voice_id
+        raise KeyError(f"No ElevenLabs voice named {name!r}")
+
     def __init__(self, config: dict):
         raw_key = os.getenv("ELEVENLABS_API_KEY", "").strip()
         if not raw_key:
             raise ValueError("Missing ELEVENLABS_API_KEY")
         self.client = ElevenLabs(api_key=raw_key)
 
-        cfg_tts      = config.get("tts", {})
-        # pick voice or fallback
-        voices = self.client.voices.get_all().voices
-        self.voice_id      = cfg_tts.get("voice_id") or voices[0].voice_id
+        cfg_tts = config.get("tts", {})
+        vid      = cfg_tts.get("voice_id", "")         # could be an ID …
+        vname    = cfg_tts.get("voice_name", "")       # … or a friendly name
+        if vname:
+            try:
+                vid = ElevenLabsTTS.voice_id_for_name(vname)
+            except KeyError as e:
+                raise ValueError(f"Voice lookup error: {e}")
+
+        # if neither provided, auto-pick the first
+        if not vid:
+            vid = self.client.voices.get_all().voices[0].voice_id
+        self.voice_id      = vid
         self.model_id      = cfg_tts.get("model_id", "eleven_multilingual_v2")
         self.output_format = cfg_tts.get("output_format", "pcm_16000")
         self.voice_settings = VoiceSettings(

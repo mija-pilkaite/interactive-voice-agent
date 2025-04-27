@@ -14,7 +14,6 @@ class Player:
     def play(self, pcm_bytes: bytes):
         # Turn the raw bytes into an int16 numpy array
         audio = np.frombuffer(pcm_bytes, dtype=np.int16)
-        # If it's multi-channel interleaved, reshape accordingly:
         if self.channels > 1:
             audio = audio.reshape(-1, self.channels)
 
@@ -37,10 +36,7 @@ class Player:
         try:
             while True:
                 chunk = await pcm_queue.get()
-                # If your pipeline never ends with a sentinel, this will run until
-                # you CTRL-C out of the whole app.
                 if not chunk:
-                    # skip any empty frames
                     continue
                 stream.write(chunk)
         finally:

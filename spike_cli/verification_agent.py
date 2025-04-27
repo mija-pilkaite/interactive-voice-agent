@@ -1,5 +1,3 @@
-# spike_cli/verification_agent.py
-
 import os
 import re
 import json

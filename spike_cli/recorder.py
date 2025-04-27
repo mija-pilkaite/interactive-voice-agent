@@ -123,5 +123,3 @@ class Recorder:
                 self._stream.close()
             except Exception:
                 pass
-        # We no longer join the VAD thread here to avoid joining from within the same thread.
-        # The thread will exit naturally once _running is False.

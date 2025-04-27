@@ -10,17 +10,28 @@ from spike_cli.stt                import DeepgramSTT
 from spike_cli.tts                import ElevenLabsTTS
 from spike_cli.player             import Player
 from spike_cli.verification_agent import VerificationAgent
-
+import argparse
 
 def load_config():
     cfg_path = Path(__file__).parent.parent / "config.yml"
     return yaml.safe_load(cfg_path.read_text())
 
+def parse_args():
+    p = argparse.ArgumentParser()
+    p.add_argument(
+        "--voice-name",
+        "-v", metavar="NAME",
+        help="User-friendly name of the ElevenLabs voice (e.g. Aria, Roger, Sarah, etc.)"
+    )
+    return p.parse_args()
 
 async def main():
     # 1) Load environment & config
     load_dotenv(Path(__file__).parent.parent / ".env")
     config = load_config()
+    args = parse_args()
+    if args.voice_name:
+            config.setdefault("tts", {})["voice_name"] = args.voice_name
 
     # 2) Initialize components
     rec_cfg = config.get("recorder", {})
@@ -32,7 +43,7 @@ async def main():
     stt    = DeepgramSTT(sample_rate=rec_cfg.get("samplerate", 16000))
     tts    = ElevenLabsTTS(config)
     player = Player(sample_rate=rec_cfg.get("samplerate", 16000), channels=1)
-
+    
     agent = VerificationAgent(config)
     state = agent.initial_state.copy()
     print("📋 Starting with state:", state)
