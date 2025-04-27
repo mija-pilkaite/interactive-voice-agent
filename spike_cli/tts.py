@@ -12,6 +12,11 @@ class ElevenLabsTTS:
         if not key:
             raise ValueError("Missing ELEVENLABS_API_KEY")
         client = ElevenLabs(api_key=key)
+        print("Fetching ElevenLabs voices...")
+        voices = client.voices.get_all().voices
+        print(f"Found {len(voices)} voices:")
+        print(f'Voices: {", ".join([v.name for v in voices])}')
+        print(f"Voice IDs: {', '.join([v.voice_id for v in voices])}")
         return client.voices.get_all().voices
 
     @staticmethod

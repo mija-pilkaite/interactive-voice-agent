@@ -2,7 +2,7 @@ stt:
   provider: deepgram
 tts:
   provider: elevenlabs
-  voice_id:   "" # change this to one of your valid voice IDs, or leave blank to auto-pick
+  voice_id:   "vibfi5nlk3hs8Mtvf9Oy" # change this to one of your valid voice IDs, or leave blank to auto-pick
   model_id: "eleven_multilingual_v2"
   output_format: "pcm_16000"
   stability: 0.75
