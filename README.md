@@ -74,7 +74,6 @@ An interactive command-line tool that simulates a hospital staff member calling 
     docker run --rm -it --env-file .env spike-cli
     ```
 
----
 
 ## 🏗️ Architecture Overview
 ```
@@ -82,7 +81,7 @@ An interactive command-line tool that simulates a hospital staff member calling 
 │ Micro-   │──────▶│ Recorder  │──────▶│ Deepgram   │──────▶ │ Verification│──────▶│ ElevenLabs│──────▶│ Player    │
 │ phone    │       │ (VAD)     │       │ STT Client │        │ Agent       │       │ TTS Client│       │ (Playback)│
 └──────────┘       └───────────┘       └────────────┘        └───────────--┘       └───────────┘       └────────---┘
-
+```
 
 
 	•	Recorder (recorder.py): captures live audio, segments utterances via WebRTC VAD, emits utterance buffers.
