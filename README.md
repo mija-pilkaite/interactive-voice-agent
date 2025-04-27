@@ -37,10 +37,11 @@ An interactive command-line tool that simulates a hospital staff member calling 
     ```
 
 5. **Customize config.yml (optional)**:
+
     •	Adjust recorder settings (samplerate, frame_duration)
 
 	•	Set TTS voice or name
-    
+
 	•	Change LLM model or system prompt template
 
 6. **Run the app**:
@@ -67,7 +68,7 @@ An interactive command-line tool that simulates a hospital staff member calling 
     python -m spike_cli.list_voices
     ```
 
-7. (Optional) Docker (<- right now only supported on Linux as on Mac and Windows I could not make it access the mic and the speakers)
+7. **(Optional) Docker (<- right now only supported on Linux as on Mac and Windows I could not make it access the mic and the speakers)**:
     ```
     docker build -t spike-cli .
     docker run --rm -it --env-file .env spike-cli
@@ -81,7 +82,7 @@ An interactive command-line tool that simulates a hospital staff member calling 
 │ Micro-   │──────▶│ Recorder  │──────▶│ Deepgram   │──────▶ │ Verification│──────▶│ ElevenLabs│──────▶│ Player    │
 │ phone    │       │ (VAD)     │       │ STT Client │        │ Agent       │       │ TTS Client│       │ (Playback)│
 └──────────┘       └───────────┘       └────────────┘        └───────────--┘       └───────────┘       └────────---┘
-```
+
 
 
 	•	Recorder (recorder.py): captures live audio, segments utterances via WebRTC VAD, emits utterance buffers.
