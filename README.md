@@ -38,7 +38,9 @@ An interactive command-line tool that simulates a hospital staff member calling 
 
 5. **Customize config.yml (optional)**:
     •	Adjust recorder settings (samplerate, frame_duration)
+
 	•	Set TTS voice or name
+    
 	•	Change LLM model or system prompt template
 
 6. **Run the app**:
@@ -75,13 +77,12 @@ An interactive command-line tool that simulates a hospital staff member calling 
 
 ## 🏗️ Architecture Overview
 ```
-
 ┌──────────┐   PCM ┌───────────┐  Text ┌────────────┐  Prompt┌───────────--┐  Text ┌───────────┐  PCM  ┌────────---┐
 │ Micro-   │──────▶│ Recorder  │──────▶│ Deepgram   │──────▶ │ Verification│──────▶│ ElevenLabs│──────▶│ Player    │
 │ phone    │       │ (VAD)     │       │ STT Client │        │ Agent       │       │ TTS Client│       │ (Playback)│
 └──────────┘       └───────────┘       └────────────┘        └───────────--┘       └───────────┘       └────────---┘
-
 ```
+
 
 	•	Recorder (recorder.py): captures live audio, segments utterances via WebRTC VAD, emits utterance buffers.
 
@@ -213,14 +214,20 @@ We provide a Dockerfile for Linux to guarantee consistent dependencies and simpl
 
 ## 🔮 Future Improvements
 
-WebSocket API for External UIs and DashboardsDevelop a bidirectional WebSocket endpoint that exposes live call events (e.g., raw audio frames, partial and final transcripts, agent prompts) to browser-based or desktop client dashboards. This enables real-time monitoring, visual transcript overlays, and remote control (e.g., pause/resume, push custom prompts).
+1. **WebSocket API for External UIs and Dashboards**:
+Develop a bidirectional WebSocket endpoint that exposes live call events (e.g., raw audio frames, partial and final transcripts, agent prompts) to browser-based or desktop client dashboards. This enables real-time monitoring, visual transcript overlays, and remote control (e.g., pause/resume, push custom prompts).
 
-Real-time STT Streaming with Human-like InterruptionsIntegrate Deepgram’s live streaming API to receive partial transcripts as audio arrives. By processing interim hypotheses, the agent can detect sentence boundaries or key keywords and interject follow-up questions without waiting for the entire utterance. This mimics a more conversational, human-to-human interruption style.
+2. **Real-time STT Streaming with Human-like Interruptions**:
+Integrate Deepgram’s live streaming API to receive partial transcripts as audio arrives. By processing interim hypotheses, the agent can detect sentence boundaries or key keywords and interject follow-up questions without waiting for the entire utterance. This mimics a more conversational, human-to-human interruption style.
 
-Redis-backed Cache & Queue for ScalabilityUse Redis to cache recent STT transcripts and LLM responses, reducing redundant API calls for identical inputs. Implement a queue for orchestrating multiple concurrent calls (e.g., dozens of agent sessions), enabling horizontal scaling and reliable message delivery with retry logic on transient failures.
+3. **Redis-backed Cache & Queue for Scalability**
+Use Redis to cache recent STT transcripts and LLM responses, reducing redundant API calls for identical inputs. Implement a queue for orchestrating multiple concurrent calls (e.g., dozens of agent sessions), enabling horizontal scaling and reliable message delivery with retry logic on transient failures.
 
-Custom Voice Training & Personality PresetsAllow users to upload or fine-tune ElevenLabs voices for branded or domain-specific tonality (e.g., pediatric, geriatric, corporate). Provide personality presets via system-prompt templates (e.g., “cheerful concierge,” “formal verifier”), so switching between different agent personas is as simple as selecting a dropdown.
+4. **Custom Voice Training & Personality Presets**
+Allow users to upload or fine-tune ElevenLabs voices for branded or domain-specific tonality (e.g., pediatric, geriatric, corporate). Provide personality presets via system-prompt templates (e.g., “cheerful concierge,” “formal verifier”), so switching between different agent personas is as simple as selecting a dropdown.
 
-Web Front-end with Live Transcript & Call LogsBuild a lightweight React interface that connects to the WebSocket API. Display live-updating transcripts, audio waveform visualization, and a sidebar of captured insurance data. Store call logs to a database for audit trails, transcripts archiving, and post-call review.
+5. **Web Front-end with Live Transcript & Call Logs**
+Build a lightweight React interface that connects to the WebSocket API. Display live-updating transcripts, audio waveform visualization, and a sidebar of captured insurance data. Store call logs to a database for audit trails, transcripts archiving, and post-call review.
 
+6. **Database implementation**
 Database for the patients and having the LLM gathered information saved into the database. This would allow saving the patient's information, access it later and as well even implement an algorithm that the LLM calls for patients that are still missing their insurance information. 
